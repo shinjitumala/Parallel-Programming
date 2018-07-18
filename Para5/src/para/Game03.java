@@ -10,7 +10,7 @@ import para.game.*;
 import java.util.Random;
 
 public class Game03 extends GameFrame{
-  volatile Thread thread;
+  volatile Thread thread, cam_thread;
   final ShapeManager sm, wall, board, dead_wall, sm_score, sm2;
   Vec2 pos;
   Vec2 vel;
@@ -24,9 +24,12 @@ public class Game03 extends GameFrame{
   int power_duration;
   int combo;
   final int score_per_dot = 1;
-  final double combo_multiplier = 0.02;
+  final double combo_multiplier = 0.06;
   int timeout;
   Shape s_timeout;
+  int ball_count;
+  boolean game = true;
+  final int FRAMETIME = 33;
 
 
   public Game03(){
@@ -58,14 +61,16 @@ public class Game03 extends GameFrame{
       return;
     }
     sm.clear();
-    IntStream.range(0,65*30).forEach(n->{
-        int x = n%65;
-        int y = n/65;
-        if(random.nextDouble() >= 0.98){
-          sm2.add(new Rectangle(10+n,30+x*4,50+y*4,3,3,
+
+    ball_count = 24 * 13;
+    IntStream.range(0,24*13).forEach(n->{
+        int x = n%24;
+        int y = n/24;
+        if(random.nextDouble() >= 0.90 + 0.01 * v * 2){
+          sm2.add(new Rectangle(40+n,40+x*10,40+y*10,9,9,
                                new Attribute(100,255,100,true,0,0,0)));
         }else{
-          sm.add(new Rectangle(10+n,30+x*4,50+y*4,3,3,
+          sm.add(new Rectangle(40+n,40+x*10,40+y*10,9,9,
                                new Attribute(250,100,250,true,0,0,0)));
         }
 
@@ -75,7 +80,7 @@ public class Game03 extends GameFrame{
         // vel = new Vec2(2,8);
         bpos = 160;
 
-        reset();
+        reset(v);
 
         Attribute attr = new Attribute(150,150,150,true);
         board.put(new Camera(0, 0, 300,attr));
@@ -87,13 +92,13 @@ public class Game03 extends GameFrame{
         float[] stime = new float[]{1.0f};
         float[] wtime = new float[]{1.0f};
 
-        while(true){
+        while(game){
           try{
-            Thread.sleep(8);
+            Thread.sleep(FRAMETIME);
           }catch(InterruptedException ex){
           }
           if((lefton ==1 || righton ==1)){
-            bpos =bpos-8*lefton+8*righton;
+            bpos =bpos-12*lefton+12*righton;
             if(bpos<35){
               bpos = 35;
             }else if(285<bpos){
@@ -120,6 +125,7 @@ public class Game03 extends GameFrame{
             power_duration--;
           }
           update_score();
+          check_end();
 
           // System.out.println(score);
 
@@ -131,14 +137,14 @@ public class Game03 extends GameFrame{
           canvas.draw(sm_score);
 
           canvas.flush();
-          if(timeout >= 180){
+          if(timeout >= 3000 / FRAMETIME){
             // System.out.println("hoge");
             s_timeout = new Digit(5,160 ,160,40, 3, new Attribute(255,200,200));
-          }else if(timeout >= 120 && timeout < 180){
+          }else if(timeout >= 2000 / FRAMETIME && timeout < 3000 / FRAMETIME){
             s_timeout = new Digit(5,160 ,160,40, 2, new Attribute(255,200,200));
-          }else if(timeout >= 60 && timeout < 120){
+          }else if(timeout >= 1000 / FRAMETIME && timeout < 2000 / FRAMETIME){
             s_timeout = new Digit(5,160 ,160,40, 1, new Attribute(255,200,200));
-          }else if(timeout > 0 && timeout < 60){
+          }else if(timeout > 0 && timeout < 1000 / FRAMETIME){
             s_timeout = new Digit(5,160 ,160,40, 0, new Attribute(255,200,200));
           }
           // System.out.println("hoge");
@@ -178,56 +184,66 @@ public class Game03 extends GameFrame{
               sm.remove(s);
               hit();
               if(!power){ // パワーアップ状態では貫通
-                pos = tmpspos;
                 vel = tmpsvel;
-                time = stime[0];
-              }else{
-                pos = MathUtil.plus(pos, MathUtil.times(vel,time));
-                time = 0;
               }
+              time = stime[0];
+              pos = tmpspos;
             }else if(w != null){
               pos = tmpwpos;
               vel = tmpwvel;
               time = wtime[0];
             }else if(d_w != null){ //地面に衝突
-              reset();
+              reset(v);
               power = false;
               combo = 0;
             }else if(s2 != null){ //　パワーアップをゲット
               sm2.remove(s2);
               power = true;
-              power_duration = 300;
+              power_duration = 5000 / FRAMETIME;
               hit();
               if(!power){ // パワーアップ状態では貫通
-                pos = tmpspos;
                 vel = tmpsvel;
-                time = stime[0];
-              }else{
-                pos = MathUtil.plus(pos, MathUtil.times(vel,time));
-                time = 0;
               }
+              pos = tmpspos;
+              time = stime[0];
             }else{
               if(timeout <= 0) pos = MathUtil.plus(pos, MathUtil.times(vel,time));
               time = 0;
             }
           }
         }
+
+        // ゲーム終了後の処理
+        canvas.clear();
+        title = "GAMEOVER";
+        System.out.println("GAMEOVER");
       });
     thread.start();
   }
 
   /** ボールの状態を初期にリセット */
-  private void reset(){
+  private void reset(int v){
     pos = new Vec2(160, 180);
     float f = Double.valueOf(-4 + 8 * random.nextDouble()).floatValue();
-    vel = new Vec2(f, 6);
-    timeout = 240;
+    vel = new Vec2(f, 6 + v);
+    timeout = 4000 / FRAMETIME;
+
+    sm_score.remove(6);
+    sm_score.remove(7);
+    sm_score.remove(8);
   }
 
   /** ボール当たり判定の点数計算 */
   private void hit(){
     combo++;
     score += score_per_dot + combo_multiplier * combo;
+    ball_count--;
+
+    if(combo != 0){
+      sm_score.put(new Digit(6,(int)pos.data[0] + 20 + 20 * combo / 30,(int)pos.data[1], 10 + combo / 30, combo % 10, new Attribute(255,50,50)));
+      if (combo >= 10) sm_score.put(new Digit(7,(int)pos.data[0] - 5 + 20 * combo / 30,(int)pos.data[1], 10 + combo / 30, (combo % 100) / 10,  new Attribute(255,50,50)));
+      if (combo >= 100) sm_score.put(new Digit(8,(int)pos.data[0] - 30,(int)pos.data[1], 10 + combo / 30, combo / 100, new Attribute(255,50,50)));
+    }
   }
 
   private void update_score(){
@@ -238,5 +254,11 @@ public class Game03 extends GameFrame{
     sm_score.put(new Digit(4,100 - 60 ,490 + 120,20, score/10000, new Attribute(200,200,200)));
 
     canvas.draw(sm_score); // スコアの描画
+  }
+
+  /**　終了条件をチェック */
+  private void check_end(){
+    if (ball_count == 0) game = false;
+    title = "GAMEOVER";
   }
 }
