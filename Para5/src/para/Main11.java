@@ -1,4 +1,4 @@
-/** 1613354 星野シンジ */
+/** 星野シンジ 1613354 */
 package para;
 
 import java.util.Scanner;
@@ -90,31 +90,25 @@ public class Main11{
             time =1.0f;
             while(0<time){
               stime[0] = time;
-              // wtime[0] = time;
+              wtime[0] = time;
               Vec2 tmpspos = new Vec2(pos);
               Vec2 tmpsvel = new Vec2(vel);
-              // Vec2 tmpwpos = new Vec2(pos);
-              // Vec2 tmpwvel = new Vec2(vel);
+              Vec2 tmpwpos = new Vec2(pos);
+              Vec2 tmpwvel = new Vec2(vel);
               Shape s=ccp.check(sm, tmpspos, tmpsvel, stime);
-              // Shape w=ccp.check(wall, tmpwpos, tmpwvel, wtime);
+              Shape w=ccp.check(wall, tmpwpos, tmpwvel, wtime);
               if(s != null) {
                 sm.remove(s);
                 pos = tmpspos;
                 vel = tmpsvel;
                 time = stime[0];
+              }else if(w != null){
+                pos = tmpwpos;
+                vel = tmpwvel;
+                time = wtime[0];
               }else{
-                wtime[0] = time;
-                Vec2 tmpwpos = new Vec2(pos);
-                Vec2 tmpwvel = new Vec2(vel);
-                Shape w=ccp.check(wall, tmpwpos, tmpwvel, wtime);
-                if(w != null){
-                  pos = tmpwpos;
-                  vel = tmpwvel;
-                  time = wtime[0];
-                }else{
-                  pos = MathUtil.plus(pos, MathUtil.times(vel,time));
-                  time = 0;
-                }
+                pos = MathUtil.plus(pos, MathUtil.times(vel,time));
+                time = 0;
               }
             }
           }
@@ -129,7 +123,6 @@ public class Main11{
     }catch(InterruptedException e){
 
     }
-
     new Main11(args[0]).start();
   }
 }

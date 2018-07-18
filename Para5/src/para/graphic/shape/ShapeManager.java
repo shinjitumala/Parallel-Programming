@@ -1,3 +1,4 @@
+/** 星野シンジ　16B13354 */
 package para.graphic.shape;
 import java.util.*;
 import java.util.stream.*;
@@ -13,7 +14,7 @@ public class ShapeManager{
   /** 図形の集合を生成する（空集合）
    */
   public ShapeManager(){
-    data = new ArrayList<Shape>(); 
+    data = new ArrayList<Shape>();
   }
 
   /** 図形の集合を生成する（空集合）.
@@ -23,7 +24,7 @@ public class ShapeManager{
   ShapeManager(AbstractCollection<Shape> data){
     this.data = data;
   }
-  
+
   /** 図形の集合を空集合にする
    */
   public synchronized void clear(){
@@ -82,11 +83,19 @@ public class ShapeManager{
    */
   public synchronized boolean remove(Shape shape){
     int id = shape.id;
+    /*
     for(Shape s:data){
       if(s.id == id){
         data.remove(s);
         return true;
       }
+    }
+    */
+    
+    Shape t_s = data.stream().parallel().filter(s->s.id == id).findFirst().orElse(null);
+    if(t_s != null){
+      data.remove(t_s);
+      return true;
     }
     return false;
   }
@@ -118,25 +127,25 @@ public class ShapeManager{
     }
     return ret;
   }
-  
+
   public synchronized Shape[] getData(){
     return data.toArray(new Shape[0]);
   }
 
   public synchronized Stream<Shape> getStream(){
     return data.stream();
-  } 
-  
+  }
+
   public synchronized Stream<Shape> getParallelStream(){
     return data.parallelStream();
-  } 
-  
+  }
+
   /** 集合内の図形を出力する．
    *  @param target 出力装置
    */
   public synchronized void draw(Target target){
     for(Shape s:data){
-      s.draw(target); 
+      s.draw(target);
     }
   }
 }
