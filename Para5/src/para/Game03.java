@@ -29,7 +29,7 @@ public class Game03 extends GameFrame{
   Shape s_timeout;
   int ball_count;
   boolean game = true;
-  final int FRAMETIME = 33;
+  final int FRAMETIME = 64;
 
 
   public Game03(){
@@ -61,6 +61,7 @@ public class Game03 extends GameFrame{
       return;
     }
     sm.clear();
+    game = true;
 
     ball_count = 24 * 13;
     IntStream.range(0,24*13).forEach(n->{
@@ -217,6 +218,11 @@ public class Game03 extends GameFrame{
         canvas.clear();
         title = "GAMEOVER";
         System.out.println("GAMEOVER");
+        thread = null;
+        power = false;
+        power_duration = 0;
+        score = 0;
+
       });
     thread.start();
   }
@@ -240,8 +246,8 @@ public class Game03 extends GameFrame{
     ball_count--;
 
     if(combo != 0){
-      sm_score.put(new Digit(6,(int)pos.data[0] + 20 + 20 * combo / 30,(int)pos.data[1], 10 + combo / 30, combo % 10, new Attribute(255,50,50)));
-      if (combo >= 10) sm_score.put(new Digit(7,(int)pos.data[0] - 5 + 20 * combo / 30,(int)pos.data[1], 10 + combo / 30, (combo % 100) / 10,  new Attribute(255,50,50)));
+      sm_score.put(new Digit(6,(int)pos.data[0] + 20 + 16 * combo / 30,(int)pos.data[1], 10 + combo / 30, combo % 10, new Attribute(255,50,50)));
+      if (combo >= 10) sm_score.put(new Digit(7,(int)pos.data[0] - 5 + 8 * combo / 30,(int)pos.data[1], 10 + combo / 30, (combo % 100) / 10,  new Attribute(255,50,50)));
       if (combo >= 100) sm_score.put(new Digit(8,(int)pos.data[0] - 30,(int)pos.data[1], 10 + combo / 30, combo / 100, new Attribute(255,50,50)));
     }
   }
