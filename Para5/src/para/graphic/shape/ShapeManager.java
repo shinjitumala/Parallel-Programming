@@ -82,7 +82,7 @@ public class ShapeManager{
    *  @return 図形のidと一致する要素がリスト中にあれば true, なければ false
    */
   public synchronized boolean remove(Shape shape){
-    int id = shape.id;
+    // int id = shape.id;
     /*
     for(Shape s:data){
       if(s.id == id){
@@ -91,13 +91,16 @@ public class ShapeManager{
       }
     }
     */
-    
+    /*
     Shape t_s = data.stream().parallel().filter(s->s.id == id).findFirst().orElse(null);
     if(t_s != null){
       data.remove(t_s);
       return true;
     }
     return false;
+    */
+
+    return data.remove(shape);
   }
 
   public synchronized void copy(ShapeManager in){
