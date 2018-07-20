@@ -1,3 +1,4 @@
+/** 1613354 星野シンジ */
 package para.opencl;
 
 import com.jogamp.opencl.CLBuffer;
@@ -27,7 +28,7 @@ public class Max3{
 
     FloatBuffer tmpfb;
 
-    tmptf =  loadData("data.dataa.txt");
+    tmpfb =  loadData("data/dataa.txt");
     CLBuffer<FloatBuffer> BufferA = cl.createBuffer(tmpfb, READ_ONLY);
     tmpfb.rewind();
 
@@ -65,6 +66,10 @@ public class Max3{
     }
     System.out.println();
     cl.release();
+  }
+
+  static public FloatBuffer loadData(String fname){
+    return HelloOpenCL.loadData(fname);
   }
 
   public static void main(String[] argv){

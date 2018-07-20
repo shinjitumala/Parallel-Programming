@@ -1,8 +1,9 @@
+// 1613354 Hoshino Shinji
 #pragma OPENCL EXTENSION cl_khr_byte_addressable_store : enable
 
 // OpenCL Kernel Function
 __kernel void Mosaic(const int width, const int height,
-                     __constant uchar* input,
+                     __global uchar* input,
                      __local int* ldata,
                      __global uchar* output,
                         float parameter){
@@ -14,7 +15,7 @@ __kernel void Mosaic(const int width, const int height,
   /**
    * copy one block area colors to the local memory for this work group
    */
-  
+
   /*
   ldata[((ly*2  )*8+(lx*2  ))*3  ] = input[((y*2  )*width+(x*2  ))*3  ];
   ldata[((ly*2  )*8+(lx*2  ))*3+1] = input[((y*2  )*width+(x*2  ))*3+1];
@@ -35,28 +36,23 @@ __kernel void Mosaic(const int width, const int height,
     ldata[((ly*2+1)*8+(lx*2  ))*3+c] = input[((y*2+1)*width+(x*2  ))*3+c];
     ldata[((ly*2+1)*8+(lx*2+1))*3+c] = input[((y*2+1)*width+(x*2+1))*3+c];
   }
+
+  // wait for all local data to be loaded
   barrier(CLK_LOCAL_MEM_FENCE);
 
   /**
-   * calculate average color in one block area 
-   */ 
+   * calculate average color in one block area
+   */
+  for(int c = 0; c < 3; c++){
+    ldata[((ly * 2    ) * 8 + (lx * 2    )) * 3 + c] = (ldata[((ly * 2    ) * 8 + (lx * 2    )) * 3 + c] +
+                                                        ldata[((ly * 2    ) * 8 + (lx * 2 + 1)) * 3 + c] +
+                                                        ldata[((ly * 2 + 1) * 8 + (lx * 2    )) * 3 + c] +
+                                                        ldata[((ly * 2 + 1) * 8 + (lx * 2 + 1)) * 3 + c]) / 4;
+  }
 
+  // wait for local calculations to be over before output
+  barrier(CLK_LOCAL_MEM_FENCE);
 
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
   /**
    * fill one color in a block area
    */
@@ -88,7 +84,7 @@ __kernel void Mosaic(const int width, const int height,
   output[((y*2  )*width+(x*2+1))*4+3] = 0xff;
   output[((y*2+1)*width+(x*2  ))*4+3] = 0xff;
   output[((y*2+1)*width+(x*2+1))*4+3] = 0xff;
-  
+
   /* just through process which means that there is no data change
   output[((y*2  )*width+(x*2  ))*4  ] = input[((y*2  )*width+(x*2  ))*3  ];
   output[((y*2  )*width+(x*2  ))*4+1] = input[((y*2  )*width+(x*2  ))*3+1];

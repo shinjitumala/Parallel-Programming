@@ -1,3 +1,4 @@
+/** 1613354 星野シンジ */
 package para.opencl;
 
 import com.jogamp.opencl.CLBuffer;

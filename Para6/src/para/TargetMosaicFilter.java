@@ -32,7 +32,7 @@ public class TargetMosaicFilter extends TargetFilter{
     this.kernelsource = kernelsource;
     this.kernelname = kernelname;
   }
-  
+
   protected ByteBuffer process(ByteBuffer oneshot){
     if(isFirst){
       input = cl.createByteBuffer(Camera.WIDTH*Camera.HEIGHT*3, READ_ONLY);
@@ -47,7 +47,7 @@ public class TargetMosaicFilter extends TargetFilter{
     }
     oneshot.rewind();
     input = input.cloneWith(oneshot);
-    queue.putWriteBuffer(input, false);//inputのデータをカーネルプログラムへ 
+    queue.putWriteBuffer(input, false);//inputのデータをカーネルプログラムへ
     queue.putBarrier()
          .put2DRangeKernel(kernel, 0, 0,Camera.WIDTH/2,Camera.HEIGHT/2,4,4)//演算
          .putBarrier()
