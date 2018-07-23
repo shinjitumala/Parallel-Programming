@@ -29,8 +29,8 @@ public class Main14 extends Application{
     sm = new OrderedShapeManager();
     jfc = new JavaFXCanvasTarget(360,280);
 
-    filter = new TargetDelayFilter(jfc, "donothing.cl", "DoNothing");
-    // filter = new TargetDelayFilter(jfc, "delay.cl", "Delay");
+    // filter = new TargetDelayFilter(jfc, "donothing.cl", "DoNothing");
+    filter = new TargetDelayFilter(jfc, "delay.cl", "Delay");
     target = new TargetRecorder("recorddelay", filter);
     target.init();
     target.clear();
