@@ -29,7 +29,7 @@ public class Main13{
       }
     }
   }
-  
+
   /** メインメソッド
    * @param args このプログラムでは値は使用されません
    */

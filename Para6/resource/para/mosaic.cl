@@ -43,15 +43,17 @@ __kernel void Mosaic(const int width, const int height,
   /**
    * calculate average color in one block area
    */
-  for(int c = 0; c < 3; c++){
-    ldata[((ly * 2    ) * 8 + (lx * 2    )) * 3 + c] = (ldata[((ly * 2    ) * 8 + (lx * 2    )) * 3 + c] +
-                                                        ldata[((ly * 2    ) * 8 + (lx * 2 + 1)) * 3 + c] +
-                                                        ldata[((ly * 2 + 1) * 8 + (lx * 2    )) * 3 + c] +
-                                                        ldata[((ly * 2 + 1) * 8 + (lx * 2 + 1)) * 3 + c]) / 4;
+  for(int c; c < 3; c++){
+    for(int s = 1; s < 4; s *= 2){
+      if(lx % (s * 2) == 0 && ly % (s * 2) == 0){
+        ldata[((ly * 2) * 8 + (lx * 2)) * 3 + c] += ldata[((ly * 2 + s) * 8 + (lx * 2    )) * 3 + c]
+                                                  + ldata[((ly * 2    ) * 8 + (lx * 2 + s)) * 3 + c]
+                                                  + ldata[((ly * 2 + s) * 8 + (lx * 2 + s)) * 3 + c];
+      }
+      // wait for one block to finish computing before proceeding
+      barrier(CLK_LOCAL_MEM_FENCE);
+    }
   }
-
-  // wait for local calculations to be over before output
-  barrier(CLK_LOCAL_MEM_FENCE);
 
   /**
    * fill one color in a block area
