@@ -1,3 +1,4 @@
+/** 1613354 星野シンジ */
 package para;
 
 import javafx.application.Application;
@@ -39,7 +40,7 @@ public class Main14 extends Application{
         public void run(){
           int i = 0;
           while(true){
-            //System.out.println(Thread.currentThread().getName());
+            System.out.println(Thread.currentThread().getName());
             sm.put(new Rectangle(30, i, 200, 50, 80, new Attribute(255,255,0,true)));
             target.clear();
             target.draw(sm);
@@ -51,7 +52,7 @@ public class Main14 extends Application{
             }
           }
         }
-      });
+      }, "Screen Update Thread");
   }
 
   public void start(Stage stage){
@@ -62,7 +63,7 @@ public class Main14 extends Application{
     slider.valueProperty().addListener(
       (ObservableValue<? extends Number> ov,
        Number old_val, Number new_val)->{
-        //System.out.println(Thread.currentThread().getName());
+        System.out.println(Thread.currentThread().getName());
         filter.setParameter((float)slider.getValue());
       });
     Scene scene = new Scene(pane);
