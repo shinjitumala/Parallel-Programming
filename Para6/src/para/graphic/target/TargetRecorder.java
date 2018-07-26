@@ -1,3 +1,4 @@
+/** 1613354 星野シンジ */
 package para.graphic.target;
 import para.graphic.shape.Attribute;
 import para.graphic.shape.ShapeManager;
@@ -37,13 +38,13 @@ public class TargetRecorder implements Target{
   private volatile boolean isRecordable = false;
   //  /** Frameへの変換器 */
   //  private JavaFXFrameConverter converter; //not completely implemented yet
-    
+
   /** ウィンドウに出力すると同時にファイルに録画を開始する。<br>
    * プログラム終了時に確実に録画終了処理を行うように、仮想マシンに終了処理を登録することも行う。
    * 録画像の幅、高さは録画対象の装置の大きさにより自動決定される。
    * 録画は一秒間に10コマで行われる。
    * @param filename 録画用ファイル名 後ろに自動的に".mp4"が追加される
-   * @param target  録画対象となる画像出力装置 
+   * @param target  録画対象となる画像出力装置
    * @see java.lang.Runtime#addShutdownHook
    */
   public TargetRecorder(String filename, Target target){
@@ -144,7 +145,7 @@ public class TargetRecorder implements Target{
 
   // @Override
   // /**
-  //  描画領域と同じ大きさの {@link BufferedImage}を作成する。データのコピーは行わない。 
+  //  描画領域と同じ大きさの {@link BufferedImage}を作成する。データのコピーは行わない。
   //  */
   // public BufferedImage createBufferedImage(){
   //   return new BufferedImage(width,height,image.getType());
@@ -248,10 +249,10 @@ public class TargetRecorder implements Target{
     target.drawDigit(id, x, y, r, number, attr);
   }
 
-  
+
   class Shot extends TimerTask{
     public void run(){
-      Image image = target.getImage();
+      Image image = target.copyImage();
       Frame frame = new Frame(width, height, Frame.DEPTH_BYTE, 3);
       PixelReader reader = image.getPixelReader();
       ByteBuffer b = (ByteBuffer)frame.image[0];

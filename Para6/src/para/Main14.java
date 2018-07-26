@@ -41,7 +41,7 @@ public class Main14 extends Application{
           int i = 0;
           while(true){
             System.out.println(Thread.currentThread().getName());
-            sm.put(new Rectangle(30, i, 200, 50, 80, new Attribute(255,255,0,true)));
+            sm.put(new Rectangle(30, i, 0, 50, 280, new Attribute(255,255,0,true)));
             target.clear();
             target.draw(sm);
             target.flush();
