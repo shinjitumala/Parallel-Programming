@@ -1,3 +1,4 @@
+// 1613354 Hoshino Shinji
 #pragma OPENCL EXTENSION cl_khr_byte_addressable_store : enable
 
 int addr(const int width, const int height, int x, int y){
@@ -9,7 +10,7 @@ int addr(const int width, const int height, int x, int y){
 }
 
 float bound(const float in){
-  if(in<0) return 0; 
+  if(in<0) return 0;
   if(in>255) return 255.0f;
   return in;
 }
@@ -61,7 +62,7 @@ float filter3(__global const uchar* in, const int width, const int height,
       tmp += in[addr(width, height, x+lx, y+ly)+shift] * w;
     }
   }
-  return tmp/sum; 
+  return tmp/sum;
 }
 
 float filter4(__global const uchar* in, const int width, const int height,
@@ -69,10 +70,10 @@ float filter4(__global const uchar* in, const int width, const int height,
   float tmp=0;
   float sum=0;
   float r2 = (cx-x)*(cx-x)+(cy-y)*(cy-y);
-  if(r2<2500){  
+  if(r2<2500){
     return in[addr(width, height, x, y)+shift];
   }
-  return 0; 
+  return 0;
 }
 
 float filter5(__global const uchar* in, const int width, const int height,
@@ -86,7 +87,7 @@ float filter5(__global const uchar* in, const int width, const int height,
   float ny = cy+dyi*w;
   float ldx = nx-floor(nx);
   float rdx = 1-ldx;
-  float udy = ny -floor(ny); 
+  float udy = ny -floor(ny);
   float ldy = 1-udy;
   int lx = floor(nx);
   int ly = floor(ny);
@@ -115,7 +116,7 @@ void insertionsort(uchar* data, int n){
 uchar filter6(__global const uchar* in, const int width, const int height,
               const int x,const int y, const int shift, int cx){
   // cx should be 0 to 8
-  uchar data[9];               
+  uchar data[9];
   data[0]=in[addr(width, height, x-1, y-1)+shift];
   data[1]=in[addr(width, height, x  , y-1)+shift];
   data[2]=in[addr(width, height, x+1, y-1)+shift];
@@ -130,9 +131,9 @@ uchar filter6(__global const uchar* in, const int width, const int height,
 }
 
 
-// OpenCL Kernel Function 
-__kernel void Filter1(const int width, const int height, 
-                     __global const uchar* in, 
+// OpenCL Kernel Function
+__kernel void Filter1(const int width, const int height,
+                     __global const uchar* in,
                      __global uchar *outb,
 		     const float amp) {
   // get index of global data array
@@ -152,37 +153,37 @@ __kernel void Filter1(const int width, const int height,
   outb[oadd+3]= 255;
 }
 
-// OpenCL Kernel Function 
-__kernel void Filter2(const int width, const int height, 
-                     __global const uchar* in, 
+// OpenCL Kernel Function
+__kernel void Filter2(const int width, const int height,
+                     __global const uchar* in,
                      __global uchar *outb,
 		     const float scale) {
   // get index of global data array
   int lx = get_global_id(0);
   int ly = get_global_id(1);
-/*
+
   // bound check (equivalent to the limit on a 'for' loop for standard/serial C code
-  if (lx > width || ly >height)  {
-    return;
-  }
-*/
-  float samp = scale/50; 
+  // if (lx > width || ly >height)  {
+  //   return;
+  // }
+
+  float samp = scale/50;
   int add = addr(width,height,lx,ly);
   int oadd = (ly*width+lx)*4;
   outb[oadd  ]= bound(filter2(in,width,height,lx,ly,0)*samp+128);
   outb[oadd+1]= bound(filter2(in,width,height,lx,ly,1)*samp+128);
   outb[oadd+2]= bound(filter2(in,width,height,lx,ly,2)*samp+128);
-/*
+
   outb[oadd  ]= bound(in[add]+filter2(in,width,height,lx,ly,0)*samp);
   outb[oadd+1]= bound(in[add+1]+filter2(in,width,height,lx,ly,1)*samp);
   outb[oadd+2]= bound(in[add+2]+filter2(in,width,height,lx,ly,2)*samp);
-*/
+
   outb[oadd+3]= 255;
 }
 
-// OpenCL Kernel Function 
-__kernel void Filter3(const int width,const int height, 
-                     __global const uchar* in, 
+// OpenCL Kernel Function
+__kernel void Filter3(const int width,const int height,
+                     __global const uchar* in,
                      __global uchar *outb,
 		     const float scale) {
 
@@ -204,8 +205,8 @@ __kernel void Filter3(const int width,const int height,
   outb[oadd+3]= 255;
 }
 
-__kernel void Filter4(const int width, const int height, 
-                     __global const uchar* in, 
+__kernel void Filter4(const int width, const int height,
+                     __global const uchar* in,
                      __global uchar *outb,
                       const float cx) {
   // get index of global data array
@@ -225,8 +226,8 @@ __kernel void Filter4(const int width, const int height,
   outb[oadd+3]= 255;
 }
 
-__kernel void Filter5(const int width, const int height, 
-                     __global const uchar* in, 
+__kernel void Filter5(const int width, const int height,
+                     __global const uchar* in,
                      __global uchar *outb,
 		     const float cx) {
   // get index of global data array
@@ -246,8 +247,8 @@ __kernel void Filter5(const int width, const int height,
   outb[oadd+3]= 255;
 }
 
-__kernel void Filter6(const int width, const int height, 
-                     __global const uchar* in, 
+__kernel void Filter6(const int width, const int height,
+                     __global const uchar* in,
                      __global uchar *outb,
 		     const float cx) {
   // get index of global data array
@@ -268,8 +269,8 @@ __kernel void Filter6(const int width, const int height,
   outb[oadd+3]= 255;
 }
 
-__kernel void Filter7(const int width, const int height, 
-                     __global const uchar* in, 
+__kernel void Filter7(const int width, const int height,
+                     __global const uchar* in,
                      __global uchar *outb,
 		     const float cx) {
   // get index of global data array
@@ -293,8 +294,8 @@ __kernel void Filter7(const int width, const int height,
   outb[oadd+3]= 255-(uchar)(max(max(b,g),r)*(cx/255));
 }
 
-__kernel void Filter8(const int width, const int height, 
-                     __global const uchar* in, 
+__kernel void Filter8(const int width, const int height,
+                     __global const uchar* in,
                      __global uchar *outb,
 		     const float cx) {
   // get index of global data array
@@ -316,8 +317,8 @@ __kernel void Filter8(const int width, const int height,
   outb[oadd+3]= 255;
 }
 
-__kernel void Filter9(const int width, const int height, 
-                     __global const uchar* in, 
+__kernel void Filter9(const int width, const int height,
+                     __global const uchar* in,
                      __global uchar *outb,
 		     const float cx) {
   // get index of global data array
