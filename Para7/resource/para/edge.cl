@@ -11,7 +11,7 @@ int addr(const int width, const int height, int x, int y){
 
 float bound(const float in){
   if(in < 0) return 0;
-  if(in > 255) return 0;
+  if(in > 255) return 255;
   return in;
 }
 
