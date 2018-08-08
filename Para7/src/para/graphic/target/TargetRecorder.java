@@ -249,15 +249,16 @@ public class TargetRecorder implements Target{
     public void run(){
       Image image = target.copyImage();
       Frame frame //= converter.convert(image);
-        = new Frame(width, height, Frame.DEPTH_BYTE, 3);
+        = new Frame(width, height, Frame.DEPTH_BYTE, 4);
       PixelReader reader = image.getPixelReader();
       ByteBuffer b = (ByteBuffer)frame.image[0];
       for(int y=0;y<height;y++){
         for(int x=0;x<width;x++){
           int tmp = reader.getArgb(x,y);
-          b.put((byte)((tmp&0xff)));
-          b.put((byte)((tmp&0xff00)>>8));
           b.put((byte)((tmp&0xff0000)>>16));
+          b.put((byte)((tmp&0xff00)>>8));
+          b.put((byte)((tmp&0xff)));
+          b.put((byte)0x0);
         }
       }
       b.rewind();
