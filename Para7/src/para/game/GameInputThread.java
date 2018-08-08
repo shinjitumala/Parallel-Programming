@@ -31,7 +31,7 @@ public class GameInputThread extends Thread{
   public int getUserID(){
     return userID;
   }
-  
+
   public void run(){
     ShapeManager tmp = new ShapeManager();
     MainParser parser = new MainParser(translator, tmp);
