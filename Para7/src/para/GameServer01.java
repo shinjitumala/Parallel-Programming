@@ -57,8 +57,8 @@ public class GameServer01 {
   final int DEATH_PENTALTY = -10;
   final double SPECIAL_BLOCK_SPAWN_BASE = 0.90;
   final double SPECIAL_INVIS_BLOCK_RATE = 0.10;
-  final int BLOCKS_WIDTH = 2;
-  final int BLOCKS_HEIGHT = 2;
+  final int BLOCKS_WIDTH = 20;
+  final int BLOCKS_HEIGHT = 10;
   final int BLOCKS_TOTAL = BLOCKS_WIDTH * BLOCKS_HEIGHT;
   final int BLOCK_SIZE = (350 - 60) / (BLOCKS_WIDTH + 1);
   Random random;

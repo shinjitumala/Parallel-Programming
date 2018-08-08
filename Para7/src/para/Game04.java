@@ -11,6 +11,8 @@ import para.graphic.shape.*;
 import para.graphic.parser.*;
 import para.game.*;
 
+import para.graphic.target.TargetFilter;
+
 public class Game04 extends GameFrame {
   TargetImageFilter inputside;
   final Target outputside;
@@ -22,12 +24,19 @@ public class Game04 extends GameFrame {
   static final int WIDTH = 700;
   static final int HEIGHT = 700;
 
+  final Target record; // 録画用
+
   public Game04() {
     super(new JavaFXCanvasTarget(WIDTH, HEIGHT));
+
     title = "Game04";
     outputside = canvas;
+    record = new TargetRecorder("recorddelay", outputside);
     osm = new OrderedShapeManager();
     ism = new ShapeManager();
+
+    record.init();
+    record.clear();
   }
 
   public void init() {
@@ -62,6 +71,11 @@ public class Game04 extends GameFrame {
       Attribute attr = new Attribute(200, 128, 128);
       ism.put(new Camera(0, 0, 300, attr));
       ism.put(new Rectangle(1, x, 30 * 1 + 225, 80 - 10 * v, 10, attr)); // 難易度が高いと、バーが短くなる
+
+      //録画用
+      record.draw(ism);
+      record.draw(osm);
+      record.flush();
       inputside.draw(ism);
       while (true) {
         try {

@@ -32,7 +32,7 @@ public class Main14 extends Application{
 
     // filter = new TargetDelayFilter(jfc, "donothing.cl", "DoNothing");
     filter = new TargetDelayFilter(jfc, "delay.cl", "Delay");
-    target = new TargetRecorder("recorddelay", filter);
+    target = new TargetRecorder("temp", filter);
     target.init();
     target.clear();
     sm.add(new Camera(0,20,20));
