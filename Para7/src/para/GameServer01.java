@@ -145,6 +145,7 @@ public class GameServer01 {
                                (int)pos[i].data[1], 5, ballattr));
               }
             } else {
+              // System.out.println("invisible");
               ballandscore[i].put(new Circle(
                   i * 10000 + 1, (int)pos[i].data[0], (int)pos[i].data[1], 5,
                   new Attribute(255, 255, 255, true)));
@@ -270,7 +271,7 @@ public class GameServer01 {
           blocks_special_invisible[id].remove(sbi);
           destroy_block(id);
           getInvis(id);
-          if (!invisible[id]) { // パワーアップ状態では貫通
+          if (!powerup[id]) { // パワーアップ状態では貫通
             vel[id] = tmpsvel;
           }
           pos[id] = tmpspos;

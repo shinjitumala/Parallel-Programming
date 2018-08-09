@@ -31,7 +31,7 @@ public class Game04 extends GameFrame {
 
     title = "Game04";
     outputside = canvas;
-    record = new TargetRecorder("recorddelay", outputside);
+    record = new TargetRecorder("mygame", outputside);
     osm = new OrderedShapeManager();
     ism = new ShapeManager();
 
